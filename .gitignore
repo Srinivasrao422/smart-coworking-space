@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local SQLite databases & temporary state
+*.db
+*.db-wal
+*.db-shm
+coworking.db
+
+# Environments & secrets
+.env
+.env.local
+.env.*.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & scratch
+*.log
+.system_generated/
+scratch/

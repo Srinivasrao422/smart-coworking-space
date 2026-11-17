@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Smart Co-Working Space Management Using Real-Time Monitoring
+  AWS Production Serverless & Container Deployment Specification
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+
+Resources:
+  # 1. AWS App Runner Service (Recommended for full real-time WebSockets/SSE support)
+  CoworkingAppRunnerService:
+    Type: AWS::AppRunner::Service
+    Properties:
+      ServiceName: smart-coworking-app
+      SourceConfiguration:
+        AutoDeploymentsEnabled: true
+        ImageRepository:
+          ImageIdentifier: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/smart-coworking:latest"
+          ImageRepositoryType: ECR
+          ImageConfiguration:
+            Port: '8000'
+            RuntimeEnvironmentVariables:
+              - Name: PORT
+                Value: '8000'
+              - Name: HOST
+                Value: '0.0.0.0'
+      InstanceConfiguration:
+        Cpu: '1 vCPU'
+        Memory: '2 GB'
+
+Outputs:
+  AppRunnerServiceUrl:
+    Description: "Public HTTPS URL for Smart Co-Working Space Platform"
+    Value: !GetAtt CoworkingAppRunnerService.ServiceUrl

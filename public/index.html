@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCoWork | Real-Time Workspace Intelligence & Management</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Executive Navigation Bar
+       ========================================================================== -->
+  <header class="header">
+    <div class="container header-inner">
+      <div style="display: flex; align-items: center;">
+        <a href="#" class="brand-wrapper" onclick="switchTab('explore')">
+          <div class="brand-symbol">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <div class="brand-text-block">
+            <span class="brand-name">SmartCoWork</span>
+            <span class="brand-subtext">Real-Time Monitoring</span>
+          </div>
+        </a>
+
+        <div id="telemetry-live-badge" class="telemetry-pulse-indicator">
+          <div class="pulse-circle"></div> Live Telemetry Active
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="nav-navigation">
+        <button class="nav-link-btn active" data-tab="explore">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Discover & Match
+        </button>
+        <button class="nav-link-btn" data-tab="floor-map">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Live Floor-Plans
+        </button>
+        <button id="nav-item-bookings" class="nav-link-btn" data-tab="bookings" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          My Bookings
+        </button>
+        <button id="nav-item-host" class="nav-link-btn" data-tab="host" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Host Hub
+        </button>
+        <button id="nav-item-admin" class="nav-link-btn" data-tab="admin" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+          Admin Console
+        </button>
+      </nav>
+
+      <!-- User Auth & Notification Bell -->
+      <div class="header-actions">
+        <button class="notification-bell-btn" title="Simulated Email & SMS Notifications" onclick="openNotificationsDrawer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span id="nav-bell-badge" class="bell-badge" style="display: none;">0</span>
+        </button>
+
+        <div id="auth-profile-container"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       Main Container
+       ========================================================================== -->
+  <main class="container">
+
+    <!-- ==========================================
+         TAB 1: DISCOVER & SMART MATCH
+         ========================================== -->
+    <div id="pane-explore" class="tab-pane">
+      
+      <!-- Hero Headline Banner -->
+      <section class="hero-section">
+        <div class="hero-content">
+          <h1 class="hero-headline">Smart Co-Working Spaces with <span>Real-Time Monitoring</span></h1>
+          <p class="hero-subhead">
+            The intelligent workspace discovery and booking platform. Compare verified spaces by team capacity, floor area, curated amenities, and work-style expectations with sub-second occupancy telemetry and automated no-show seat releases.
+          </p>
+
+          <!-- City Filter Pills -->
+          <div class="city-pill-selector">
+            <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-right: 4px;">Top Tech Hubs:</span>
+            <button class="city-pill-btn active" data-city="all">All Locations</button>
+            <button class="city-pill-btn" data-city="San Francisco">San Francisco</button>
+            <button class="city-pill-btn" data-city="New York">New York</button>
+            <button class="city-pill-btn" data-city="Austin">Austin</button>
+            <button class="city-pill-btn" data-city="Seattle">Seattle</button>
+            <button class="city-pill-btn" data-city="Boston">Boston</button>
+          </div>
+        </div>
+
+        <!-- Classy Segmented Filter Bar (NO RANGE SLIDERS) -->
+        <div class="executive-filter-card">
+          <div class="filter-row">
+            
+            <!-- Team Size Segmented Control -->
+            <div class="filter-col">
+              <label class="filter-label">Team Capacity Requirement</label>
+              <div class="segmented-group">
+                <button class="segmented-btn seg-team-btn active" data-val="all">All Teams</button>
+                <button class="segmented-btn seg-team-btn" data-val="solo">Solo (1)</button>
+                <button class="segmented-btn seg-team-btn" data-val="small">Team (2–5)</button>
+                <button class="segmented-btn seg-team-btn" data-val="growth">Growth (6–15)</button>
+                <button class="segmented-btn seg-team-btn" data-val="enterprise">Enterprise (16+)</button>
+              </div>
+            </div>
+
+            <!-- Budget Bracket Segmented Control -->
+            <div class="filter-col">
+              <label class="filter-label">Budget Tier</label>
+              <div class="segmented-group">
+                <button class="segmented-btn seg-budget-btn active" data-val="all">All Budgets</button>
+                <button class="segmented-btn seg-budget-btn" data-val="economy">Economy ≤$25/hr</button>
+                <button class="segmented-btn seg-budget-btn" data-val="standard">$25–$50</button>
+                <button class="segmented-btn seg-budget-btn" data-val="executive">$50–$90</button>
+                <button class="segmented-btn seg-budget-btn" data-val="premium">$90+/hr</button>
+              </div>
+            </div>
+
+            <!-- Floor Area Size Segmented Control -->
+            <div class="filter-col">
+              <label class="filter-label">Facility Area Size</label>
+              <div class="segmented-group">
+                <button class="segmented-btn seg-area-btn active" data-val="all">Any Size</button>
+                <button class="segmented-btn seg-area-btn" data-val="compact">≤ 14K sq ft</button>
+                <button class="segmented-btn seg-area-btn" data-val="medium">14K–20K sq ft</button>
+                <button class="segmented-btn seg-area-btn" data-val="large">20K+ sq ft</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Secondary Filters Row -->
+          <div class="filter-row" style="margin-bottom: 0;">
+            
+            <!-- Atmosphere / Vibe Select -->
+            <div class="filter-col">
+              <label class="filter-label">Atmosphere & Work Style Expectation</label>
+              <select id="filter-work-style" class="select-input">
+                <option value="all">All Atmosphere Styles</option>
+                <option value="COLLABORATIVE">Collaborative & Energetic Startup Hub</option>
+                <option value="QUIET_FOCUS">Quiet Focus & Deep Work Sanctuary</option>
+                <option value="EXECUTIVE">Executive / Client-Facing Prestige Suites</option>
+              </select>
+            </div>
+
+            <!-- Workspace Unit Type Select -->
+            <div class="filter-col">
+              <label class="filter-label">Workspace Unit Type</label>
+              <select id="filter-unit-type" class="select-input">
+                <option value="all">All Workspace Unit Types</option>
+                <option value="HOT_DESK">Flexible Hot Desk (Shared Bay)</option>
+                <option value="DEDICATED_DESK">Dedicated Motorized Ergo Desk</option>
+                <option value="PRIVATE_CABIN">Private Acoustic Team Cabin</option>
+                <option value="MEETING_ROOM">4K Smart Video Conference Suite</option>
+              </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="filter-col" style="justify-content: flex-end;">
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-outline" style="flex: 1;" onclick="openCompareModal()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  Compare All
+                </button>
+                <button class="btn btn-outline" onclick="resetAllFilters()">Reset</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Amenities Filter Selector -->
+          <div class="amenities-selector-box">
+            <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">Required Amenities:</span>
+            <div class="amenity-chip-list">
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="GIGABIT_WIFI" class="filter-amenity-checkbox"> Gigabit Wi-Fi (500+ Mbps)
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="POWER_BACKUP" class="filter-amenity-checkbox"> 100% DG Power Backup
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="PHONE_BOOTHS" class="filter-amenity-checkbox"> Acoustic Phone Pods
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="DUAL_MONITORS" class="filter-amenity-checkbox"> 4K Displays
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="ACCESS_24_7" class="filter-amenity-checkbox"> 24/7 Access
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="SMART_CONFERENCE" class="filter-amenity-checkbox"> Video Suite
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="VALET_PARKING" class="filter-amenity-checkbox"> Valet & EV Parking
+              </label>
+              <label class="amenity-chip-label">
+                <input type="checkbox" value="CAFETERIA" class="filter-amenity-checkbox"> Rooftop Cafeteria
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spaces Results Header & Cards Grid -->
+      <div class="spaces-section-header">
+        <h2 id="spaces-results-count" class="spaces-count-title">Loading Available Workspaces...</h2>
+      </div>
+
+      <div id="spaces-grid" class="spaces-grid"></div>
+    </div>
+
+    <!-- ==========================================
+         TAB 2: INTERACTIVE LIVE FLOOR-MAP
+         ========================================== -->
+    <div id="pane-floor-map" class="tab-pane" style="display: none;">
+      <div class="blueprint-card">
+        <div class="blueprint-toolbar">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Active Workspace Facility:</label>
+            <select id="blueprint-facility-select" class="select-input" style="width: 320px; font-weight: 700;" onchange="loadFloorMapTab()"></select>
+          </div>
+
+          <!-- Color Status Legend -->
+          <div class="blueprint-legend">
+            <div class="legend-chip"><div class="legend-pip pip-vacant"></div> Vacant (Available)</div>
+            <div class="legend-chip"><div class="legend-pip pip-reserved"></div> Reserved (Pending Arrival)</div>
+            <div class="legend-chip"><div class="legend-pip pip-occupied"></div> Occupied (In Session)</div>
+            <div class="legend-chip"><div class="legend-pip pip-maintenance"></div> Maintenance</div>
+          </div>
+        </div>
+
+        <div id="blueprint-facility-info" style="margin-bottom: 18px;"></div>
+
+        <!-- Architectural Blueprint Canvas -->
+        <div id="blueprint-svg-wrapper" class="svg-viewport-wrapper"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle); font-size: 0.85rem; color: var(--text-muted);">
+          <span>💡 <strong>Live Interactive Booking</strong>: Click on any green desk or cabin to reserve immediately. Status changes synchronize across all connected screens in real time.</span>
+          <span style="font-weight: 700; color: var(--telemetry-vacant);">● Sub-Second Telemetry Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 3: USER BOOKINGS & DIGITAL PASSES
+         ========================================== -->
+    <div id="pane-bookings" class="tab-pane" style="display: none;">
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px;">My Workspace Reservations & Passes</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">
+        Manage your active reservations, digital QR keycard access passes, and check-in history.
+      </p>
+      <div id="my-bookings-container"></div>
+    </div>
+
+    <!-- ==========================================
+         TAB 4: SPACE OWNER OPERATIONS HUB
+         ========================================== -->
+    <div id="pane-host" class="tab-pane" style="display: none;">
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px;">Space Host Operations Hub</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">
+        Real-time floor control center: override desk states, monitor check-in compliance, and list new inventory.
+      </p>
+      <div id="host-hub-container"></div>
+    </div>
+
+    <!-- ==========================================
+         TAB 5: ADMIN PLATFORM METRICS
+         ========================================== -->
+    <div id="pane-admin" class="tab-pane" style="display: none;">
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 6px;">Platform Administrator Command Center</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">
+        Multi-facility telemetry overview, automated no-show seat reclamation metrics, and live sensor stream audit logs.
+      </p>
+      <div id="admin-metrics-container"></div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODALS & DIALOGS
+       ========================================================================== -->
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 id="auth-modal-title" class="modal-heading">Executive Sign In</h3>
+        <button class="btn-close-modal" onclick="closeAuthModal()">&times;</button>
+      </div>
+
+      <!-- Quick Demo Switcher -->
+      <div style="background: #f8fafc; border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+        <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">Quick One-Click Test Accounts:</span>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="quickLoginAs('USER')">Freelancer</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="quickLoginAs('OWNER')">Space Host</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="quickLoginAs('ADMIN')">Admin</button>
+        </div>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)">
+        <div id="auth-register-fields" style="display: none;">
+          <div class="filter-col" style="margin-bottom: 14px;">
+            <label class="filter-label">Full Name</label>
+            <input type="text" id="auth-fullname" class="text-input" placeholder="e.g. Jessica Sterling" />
+          </div>
+          <div class="filter-col" style="margin-bottom: 14px;">
+            <label class="filter-label">Account Role</label>
+            <select id="auth-role" class="select-input">
+              <option value="USER">Space Seeker (Freelancer / Enterprise Team)</option>
+              <option value="SPACE_OWNER">Space Host / Facility Manager</option>
+            </select>
+          </div>
+          <div class="filter-col" style="margin-bottom: 14px;">
+            <label class="filter-label">Company / Organization (Optional)</label>
+            <input type="text" id="auth-company" class="text-input" placeholder="e.g. Sterling Ventures Ltd." />
+          </div>
+        </div>
+
+        <div class="filter-col" style="margin-bottom: 14px;">
+          <label class="filter-label">Email Address</label>
+          <input type="email" id="auth-email" class="text-input" required placeholder="user@company.com" />
+        </div>
+
+        <div class="filter-col" style="margin-bottom: 24px;">
+          <label class="filter-label">Password</label>
+          <input type="password" id="auth-password" class="text-input" required placeholder="••••••••" />
+        </div>
+
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Instant Booking Modal -->
+  <div id="booking-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Reserve Workspace</h3>
+        <button class="btn-close-modal" onclick="closeBookingModal()">&times;</button>
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <div id="booking-unit-title" style="font-size: 1.35rem; font-weight: 800; color: var(--brand-navy);"></div>
+        <div id="booking-facility-title" style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;"></div>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;">
+          <span style="color: var(--text-secondary);">Unit Rate:</span>
+          <strong id="booking-hourly-rate" style="color: var(--brand-navy);">$12.00/hr</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <span style="color: var(--text-secondary);">Duration:</span>
+          <select id="booking-duration-select" class="select-input" style="width: 150px;" onchange="calculateBookingTotal()">
+            <option value="1">1 Hour</option>
+            <option value="2">2 Hours</option>
+            <option value="4">Half Day (4 hrs)</option>
+            <option value="8">Full Day (8 hrs)</option>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 12px; font-weight: 800; font-size: 1.25rem;">
+          <span>Total Investment:</span>
+          <span id="booking-calc-total" style="color: var(--brand-blue);">$12.00</span>
+        </div>
+      </div>
+
+      <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; background: #fffbeb; border: 1px solid #fef3c7; padding: 12px; border-radius: var(--radius-sm);">
+        ⏱️ <strong>Automated Seat Reclamation Policy</strong>: To ensure peak utilization, please scan your digital QR pass upon arrival. If check-in is not confirmed within 15 minutes of slot start, the unit will be auto-released back to available inventory.
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-outline" style="flex: 1;" onclick="closeBookingModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex: 2;" onclick="confirmBooking()">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Luxury Digital Boarding Pass / QR Keycard Modal -->
+  <div id="qr-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Digital Access Keycard</h3>
+        <button class="btn-close-modal" onclick="closeQRModal()">&times;</button>
+      </div>
+
+      <!-- Boarding Pass Graphic -->
+      <div class="digital-boarding-pass">
+        <div class="pass-header">
+          <div class="pass-brand">SmartCoWork • Verified Pass</div>
+          <div id="pass-code" class="pass-ref-code">CG-2026-X89K</div>
+        </div>
+
+        <div class="pass-body-grid">
+          <div>
+            <div class="pass-field-label">Workspace Unit</div>
+            <div id="pass-unit" class="pass-field-value">Desk A-1</div>
+          </div>
+          <div>
+            <div class="pass-field-label">Facility Hub</div>
+            <div id="pass-facility" class="pass-field-value">Nexus Horizon</div>
+          </div>
+          <div>
+            <div class="pass-field-label">Valid Time Window</div>
+            <div id="pass-time" class="pass-field-value">09:00 – 11:00</div>
+          </div>
+          <div>
+            <div class="pass-field-label">Access Method</div>
+            <div class="pass-field-value" style="color: #34d399;">NFC / Optical QR</div>
+          </div>
+        </div>
+
+        <div class="pass-qr-box">
+          <svg width="130" height="130" viewBox="0 0 100 100" fill="#0b132b">
+            <rect x="5" y="5" width="25" height="25"/>
+            <rect x="10" y="10" width="15" height="15" fill="#fff"/>
+            <rect x="13" y="13" width="9" height="9"/>
+            <rect x="70" y="5" width="25" height="25"/>
+            <rect x="75" y="10" width="15" height="15" fill="#fff"/>
+            <rect x="78" y="13" width="9" height="9"/>
+            <rect x="5" y="70" width="25" height="25"/>
+            <rect x="10" y="75" width="15" height="15" fill="#fff"/>
+            <rect x="13" y="78" width="9" height="9"/>
+            <rect x="40" y="10" width="8" height="16"/>
+            <rect x="52" y="18" width="10" height="8"/>
+            <rect x="40" y="40" width="20" height="20"/>
+            <rect x="68" y="40" width="8" height="12"/>
+            <rect x="70" y="70" width="15" height="8"/>
+            <rect x="40" y="75" width="10" height="15"/>
+            <rect x="85" y="82" width="10" height="10"/>
+          </svg>
+          <div id="pass-token-string" style="font-size: 0.65rem; font-family: var(--font-mono); color: #64748b; margin-top: 8px;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <button id="btn-trigger-checkin" class="btn btn-secondary" style="width: 100%; padding: 12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Simulate Physical Scanner Check-In
+        </button>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+          Clicking above simulates scanning your QR code at the desk terminal, updating occupancy across all screens.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Space Details Drawer Modal -->
+  <div id="space-details-modal" class="modal-overlay">
+    <div class="modal-window modal-window-wide">
+      <div class="modal-top-bar">
+        <div>
+          <h3 id="modal-detail-name" class="modal-heading">Facility Name</h3>
+          <div id="modal-detail-address" style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;"></div>
+        </div>
+        <button class="btn-close-modal" onclick="closeSpaceDetailsModal()">&times;</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+        <img id="modal-detail-img" src="" alt="Space Interior" style="width: 100%; height: 260px; object-fit: cover; border-radius: var(--radius-md);" />
+        <div>
+          <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 8px;">Overview & Standards</h4>
+          <p id="modal-detail-desc" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;"></p>
+          
+          <div style="background: #f8fafc; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;">
+              <span style="color: var(--text-muted); font-weight: 700;">TOTAL FLOOR AREA:</span>
+              <strong id="modal-detail-area"></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted); font-weight: 700;">OPERATING HOURS:</span>
+              <strong id="modal-detail-hours"></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 12px;">Included Amenities & Infrastructure</h4>
+      <div id="modal-detail-amenities" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 24px;"></div>
+
+      <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--brand-navy); margin-bottom: 12px;">Bookable Units & Current Real-Time Status</h4>
+      <table class="enterprise-table">
+        <thead>
+          <tr>
+            <th>Workspace Identifier</th>
+            <th>Type & Capacity</th>
+            <th>Live Status</th>
+            <th>Rate</th>
+            <th>Instant Action</th>
+          </tr>
+        </thead>
+        <tbody id="modal-detail-units"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Compare Spaces Matrix Modal -->
+  <div id="compare-modal" class="modal-overlay">
+    <div class="modal-window modal-window-wide">
+      <div class="modal-top-bar">
+        <div>
+          <h3 class="modal-heading">Side-by-Side Facility Comparison</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Compare floor area, capacities, amenities, and pricing across all active hubs.</p>
+        </div>
+        <button class="btn-close-modal" onclick="closeCompareModal()">&times;</button>
+      </div>
+
+      <div id="compare-matrix-container" style="overflow-x: auto;"></div>
+    </div>
+  </div>
+
+  <!-- Notifications Drawer Modal -->
+  <div id="notifications-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Transactional Alerts & Messages</h3>
+        <button class="btn-close-modal" onclick="closeNotificationsModal()">&times;</button>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+        Simulated Email & SMS dispatch logs for booking confirmations, check-in passes, and auto-releases.
+      </p>
+      <div id="notifications-list"></div>
+    </div>
+  </div>
+
+  <!-- Enterprise / Custom Inquiry Modal -->
+  <div id="inquiry-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Custom Space Inquiry</h3>
+        <button class="btn-close-modal" onclick="closeInquiryModal()">&times;</button>
+      </div>
+
+      <form onsubmit="handleInquirySubmit(event)">
+        <input type="hidden" id="inquiry-facility-id" />
+        <div style="margin-bottom: 14px; font-weight: 700; color: var(--brand-navy);">
+          Destination: <span id="inquiry-space-name" style="color: var(--brand-blue);"></span>
+        </div>
+
+        <div class="filter-col" style="margin-bottom: 14px;">
+          <label class="filter-label">Estimated Team Headcount</label>
+          <input type="number" id="inquiry-team-size" class="text-input" min="1" max="100" value="5" required />
+        </div>
+
+        <div class="filter-col" style="margin-bottom: 22px;">
+          <label class="filter-label">Workspace Expectations & Requirements</label>
+          <textarea id="inquiry-message" class="text-input" rows="4" placeholder="Detail your team requirements, private cabin layout expectations, lease duration, or custom bandwidth setup..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Transmit Inquiry to Facility Manager</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Space Owner: Respond to Customer Inquiry Modal -->
+  <div id="respond-inquiry-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Dispatch Customer Quotation</h3>
+        <button class="btn-close-modal" onclick="closeRespondInquiryModal()">&times;</button>
+      </div>
+
+      <form onsubmit="handleRespondInquirySubmit(event)">
+        <div style="background: #f8fafc; border: 1px solid var(--border-subtle); padding: 14px; border-radius: var(--radius-sm); margin-bottom: 16px;">
+          <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">PROSPECT & DESTINATION:</div>
+          <div id="resp-inq-seeker" style="font-weight: 800; color: var(--brand-navy); margin-top: 2px;"></div>
+          <div id="resp-inq-facility" style="color: var(--brand-blue); font-weight: 700; font-size: 0.9rem;"></div>
+          
+          <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary); border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+            <strong>Requirement:</strong> <span id="resp-inq-request"></span>
+          </div>
+        </div>
+
+        <div class="filter-col" style="margin-bottom: 20px;">
+          <label class="filter-label">Official Space Manager Response & Quotation</label>
+          <textarea id="resp-inq-notes" class="text-input" rows="4" placeholder="Detail package terms, customized private cabin arrangements, monthly discounted rates, and tour schedule..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Transmit Response & Alert Seeker via SMS/Email</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Space Owner: Add Facility Modal -->
+  <div id="new-space-modal" class="modal-overlay">
+    <div class="modal-window">
+      <div class="modal-top-bar">
+        <h3 class="modal-heading">Add New Co-Working Facility</h3>
+        <button class="btn-close-modal" onclick="closeNewSpaceModal()">&times;</button>
+      </div>
+
+      <form onsubmit="handleCreateSpace(event)">
+        <div class="filter-col" style="margin-bottom: 12px;">
+          <label class="filter-label">Facility Name</label>
+          <input type="text" id="new-space-name" class="text-input" required placeholder="e.g. Meridian Executive Campus" />
+        </div>
+        <div class="filter-col" style="margin-bottom: 12px;">
+          <label class="filter-label">Street Address</label>
+          <input type="text" id="new-space-address" class="text-input" required placeholder="e.g. 500 Howard Street" />
+        </div>
+        <div class="filter-col" style="margin-bottom: 12px;">
+          <label class="filter-label">Metro / City</label>
+          <input type="text" id="new-space-city" class="text-input" required placeholder="San Francisco" />
+        </div>
+        <div class="filter-col" style="margin-bottom: 12px;">
+          <label class="filter-label">Total Floor Area (sq. ft.)</label>
+          <input type="number" id="new-space-area" class="text-input" value="15000" required />
+        </div>
+        <div class="filter-col" style="margin-bottom: 12px;">
+          <label class="filter-label">Atmosphere & Style</label>
+          <select id="new-space-style" class="select-input">
+            <option value="COLLABORATIVE">Collaborative</option>
+            <option value="QUIET_FOCUS">Quiet Focus</option>
+            <option value="EXECUTIVE">Executive</option>
+          </select>
+        </div>
+        <div class="filter-col" style="margin-bottom: 20px;">
+          <label class="filter-label">Description & Overview</label>
+          <textarea id="new-space-desc" class="text-input" rows="3" placeholder="Describe the facility design, target community, and amenities..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Publish Listing to Network</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-stack" class="toast-stack"></div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/sse.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

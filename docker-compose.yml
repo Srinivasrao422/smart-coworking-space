@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  smart-coworking-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-coworking-prod
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - COWORKING_SECRET_KEY=production_secure_salt_2026_enterprise
+    volumes:
+      - coworking-data:/app/data
+
+volumes:
+  coworking-data:
