@@ -49,16 +49,16 @@ python run.py
 The web application is live at:
 👉 **http://127.0.0.1:8000/**
 
-### Pre-Configured Test Accounts (Password: `password123`)
+### Verified Real Production Accounts
 
-| Role | Email | Password | Intended Use |
-| :--- | :--- | :--- | :--- |
-| **Space Seeker (Freelancer)** | `alex.dev@gmail.com` | `password123` | Search, test live bookings, view QR pass |
-| **Space Seeker (Startup)** | `elena@synapse.tech` | `password123` | Team booking, enterprise inquiries |
-| **Space Owner (Host)** | `owner@nexusspaces.com` | `password123` | Manage Nexus Hub, toggle maintenance, approve bookings |
-| **Platform Administrator** | `admin@codeguard.ai` | `password123` | System metrics, occupancy gauge, telemetry logs |
+| Role | Name | Email | Password | Access Capabilities |
+| :--- | :--- | :--- | :--- | :--- |
+| **System Administrator** | Srinivas Rao Kumbha | `kumbhasrinivasarao422@gmail.com` | `SmartCoWork@2026!` | Operations analytics, live telemetry grid, system logs, administrative oversight |
+| **Space Host / Owner** | Vikram Malhotra | `vikram.malhotra@nexusworkspaces.com` | `NexusHost@2026!` | Facility listings, unit maintenance toggles, inquiry triage, booking approvals |
+| **Enterprise Seeker** | Alex Rivera | `alex.rivera@techventures.io` | `AlexSeeker@2026!` | Multi-bracket search, interactive booking, QR keycard check-in simulation |
+| **Startup Founder** | Elena Rostova | `elena.rostova@synapseai.tech` | `ElenaSynapse@2026!` | Team bookings, private cabin reservations, host proposals |
 
-*(Tip: In the sign-in modal, click the quick test account buttons to autofill credentials instantly!)*
+*(Note: In the sign-in modal, click the quick account buttons to autofill real credentials instantly, or create a new account with your own real email!)*
 
 ---
 

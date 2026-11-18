@@ -174,15 +174,32 @@ function handleLogout() {
 }
 
 function quickLoginAs(role) {
-  if (role === 'USER') {
-    document.getElementById("auth-email").value = "alex.dev@gmail.com";
-    document.getElementById("auth-password").value = "password123";
+  const hintEl = document.getElementById("quick-cred-hint");
+  if (role === 'ADMIN') {
+    document.getElementById("auth-email").value = "kumbhasrinivasarao422@gmail.com";
+    document.getElementById("auth-password").value = "SmartCoWork@2026!";
+    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Administrator<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">kumbhasrinivasarao422@gmail.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">SmartCoWork@2026!</code>';
   } else if (role === 'OWNER') {
-    document.getElementById("auth-email").value = "owner@nexusspaces.com";
-    document.getElementById("auth-password").value = "password123";
-  } else if (role === 'ADMIN') {
-    document.getElementById("auth-email").value = "admin@codeguard.ai";
-    document.getElementById("auth-password").value = "password123";
+    document.getElementById("auth-email").value = "vikram.malhotra@nexusworkspaces.com";
+    document.getElementById("auth-password").value = "NexusHost@2026!";
+    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Space Host / Manager<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">vikram.malhotra@nexusworkspaces.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">NexusHost@2026!</code>';
+  } else if (role === 'USER') {
+    document.getElementById("auth-email").value = "alex.rivera@techventures.io";
+    document.getElementById("auth-password").value = "AlexSeeker@2026!";
+    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Enterprise Seeker<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">alex.rivera@techventures.io</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">AlexSeeker@2026!</code>';
+  }
+}
+
+function togglePasswordVisibility() {
+  const pwdInput = document.getElementById("auth-password");
+  const btn = document.getElementById("btn-toggle-pwd");
+  if (!pwdInput) return;
+  if (pwdInput.type === "password") {
+    pwdInput.type = "text";
+    if (btn) btn.textContent = "Hide Password";
+  } else {
+    pwdInput.type = "password";
+    if (btn) btn.textContent = "Show Password";
   }
 }
 

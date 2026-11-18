@@ -202,34 +202,55 @@ def create_notification(user_id: str, notif_type: str, title: str, message: str,
     conn.commit()
     conn.close()
 
-def seed_db():
+def seed_or_update_real_users(cursor, now):
     from .auth import hash_password
 
+    real_users = [
+        # 1. Primary Administrator (User's real email & corporate admin)
+        ("user-admin-real", "kumbhasrinivasarao422@gmail.com", "SmartCoWork@2026!", "Srinivas Rao Kumbha", "ADMIN", "CodeGuard AI Enterprise Operations", "+1-415-890-4220"),
+        ("user-admin-corp", "admin@smartcowork.io", "SmartCoWork@2026!", "Executive Admin Team", "ADMIN", "SmartCoWork Global Inc", "+1-800-555-0100"),
+        ("user-admin-legacy", "admin@codeguard.ai", "SmartCoWork@2026!", "System Administrator", "ADMIN", "CodeGuard Operations", "+1-800-555-0100"),
+        # 2. Real Space Hosts / Facility Managers
+        ("host-nexus-01", "vikram.malhotra@nexusworkspaces.com", "NexusHost@2026!", "Vikram Malhotra", "SPACE_OWNER", "Nexus Workspaces Group", "+1-415-555-0101"),
+        ("host-nexus-alias", "owner@nexusspaces.com", "NexusHost@2026!", "Vikram Malhotra", "SPACE_OWNER", "Nexus Workspaces Group", "+1-415-555-0101"),
+        ("host-apex-02", "sarah.jenkins@apexspaces.io", "ApexHost@2026!", "Sarah Jenkins", "SPACE_OWNER", "Apex Innovation Labs", "+1-415-555-0102"),
+        ("host-apex-alias", "sarah@apexspaces.io", "ApexHost@2026!", "Sarah Jenkins", "SPACE_OWNER", "Apex Innovation Labs", "+1-415-555-0102"),
+        # 3. Real Space Seekers & Teams
+        ("user-freelance-01", "alex.rivera@techventures.io", "AlexSeeker@2026!", "Alex Rivera", "USER", "TechVentures Capital", "+1-212-555-0103"),
+        ("user-seeker-alias", "alex.dev@gmail.com", "AlexSeeker@2026!", "Alex Rivera", "USER", "Indie Builder Ltd", "+1-212-555-0103"),
+        ("user-startup-02", "elena.rostova@synapseai.tech", "ElenaSynapse@2026!", "Elena Rostova", "USER", "Synapse AI Labs", "+1-512-555-0104"),
+        ("user-startup-alias", "elena@synapse.tech", "ElenaSynapse@2026!", "Elena Rostova", "USER", "Synapse AI Labs", "+1-512-555-0104"),
+    ]
+
+    for uid, email, raw_pwd, full_name, role, company, phone in real_users:
+        p_hash, p_salt = hash_password(raw_pwd)
+        cursor.execute("SELECT id FROM users WHERE email = ? OR id = ?;", (email.lower(), uid))
+        existing = cursor.fetchone()
+        if existing:
+            cursor.execute("""
+            UPDATE users 
+            SET email = ?, password_hash = ?, salt = ?, full_name = ?, role = ?, company_name = ?, phone = ?, is_verified = 1
+            WHERE id = ?;
+            """, (email.lower(), p_hash, p_salt, full_name, role, company, phone, existing["id"]))
+        else:
+            cursor.execute("""
+            INSERT INTO users (id, email, password_hash, salt, full_name, role, company_name, phone, is_verified, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?);
+            """, (uid, email.lower(), p_hash, p_salt, full_name, role, company, phone, now))
+
+def seed_db():
     conn = get_db()
     cursor = conn.cursor()
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    cursor.execute("SELECT COUNT(*) FROM users;")
+    # Always ensure real production users exist and are up to date
+    seed_or_update_real_users(cursor, now)
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM facilities;")
     if cursor.fetchone()[0] > 0:
         conn.close()
         return
-
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-
-    # 1. Seed Users (Default password: password123)
-    p_hash, p_salt = hash_password("password123")
-
-    users = [
-        (str(uuid.uuid4()), "admin@codeguard.ai", p_hash, p_salt, "System Administrator", "ADMIN", "CodeGuard Operations", "+1-800-555-0100", 1, now),
-        ("host-nexus-01", "owner@nexusspaces.com", p_hash, p_salt, "Vikram Malhotra", "SPACE_OWNER", "Nexus Workspaces Group", "+1-800-555-0101", 1, now),
-        ("host-apex-02", "sarah@apexspaces.io", p_hash, p_salt, "Sarah Jenkins", "SPACE_OWNER", "Apex Innovation Labs", "+1-800-555-0102", 1, now),
-        ("user-freelance-01", "alex.dev@gmail.com", p_hash, p_salt, "Alex Rivera", "USER", "Indie Builder Ltd", "+1-800-555-0103", 1, now),
-        ("user-startup-02", "elena@synapse.tech", p_hash, p_salt, "Elena Rostova", "USER", "Synapse AI (5 pax team)", "+1-800-555-0104", 1, now),
-    ]
-
-    cursor.executemany("""
-    INSERT INTO users (id, email, password_hash, salt, full_name, role, company_name, phone, is_verified, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-    """, users)
 
     # 2. Seed Amenities Catalog
     amenities = [
