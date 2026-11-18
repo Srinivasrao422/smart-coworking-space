@@ -136,12 +136,7 @@ function openAuthModal(mode = 'login') {
   const btnToggle = document.getElementById("btn-toggle-pwd");
   if (btnToggle) btnToggle.textContent = "Show Password";
 
-  // Hide hint card and clear any active button states
-  const hintEl = document.getElementById("quick-cred-hint");
-  if (hintEl) {
-    hintEl.style.display = "none";
-    hintEl.innerHTML = "";
-  }
+  // Clear any active button states
   document.querySelectorAll(".quick-role-btn").forEach(b => b.classList.remove("active"));
 
   if (mode === 'register') {
@@ -196,7 +191,6 @@ function handleLogout() {
 }
 
 function quickLoginAs(role) {
-  const hintEl = document.getElementById("quick-cred-hint");
   const emailInput = document.getElementById("auth-email");
   const pwdInput = document.getElementById("auth-password");
 
@@ -216,35 +210,18 @@ function quickLoginAs(role) {
     if (pwdInput) {
       pwdInput.value = "";
     }
-
-    if (hintEl) {
-      hintEl.style.display = "block";
-      hintEl.innerHTML = '<div style="color: var(--brand-navy); font-weight: 600; display: flex; align-items: center; gap: 6px;">' +
-        '<span>🔒 <strong>System Administrator Portal:</strong> Restricted access. Enter your authorized administrator email and password below.</span>' +
-        '</div>';
-    }
   } else if (role === 'OWNER') {
     const hostBtn = document.getElementById("btn-quick-host");
     if (hostBtn) hostBtn.classList.add("active");
 
     if (emailInput) emailInput.value = "vikram.malhotra@nexusworkspaces.com";
     if (pwdInput) pwdInput.value = "NexusHost@2026!";
-
-    if (hintEl) {
-      hintEl.style.display = "block";
-      hintEl.innerHTML = '<strong>Role:</strong> Space Host / Manager<br/><strong>Demo Account:</strong> <code style="color: var(--brand-navy); font-weight: 700;">vikram.malhotra@nexusworkspaces.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">NexusHost@2026!</code>';
-    }
   } else if (role === 'USER') {
     const seekerBtn = document.getElementById("btn-quick-seeker");
     if (seekerBtn) seekerBtn.classList.add("active");
 
     if (emailInput) emailInput.value = "alex.rivera@techventures.io";
     if (pwdInput) pwdInput.value = "AlexSeeker@2026!";
-
-    if (hintEl) {
-      hintEl.style.display = "block";
-      hintEl.innerHTML = '<strong>Role:</strong> Enterprise Seeker<br/><strong>Demo Account:</strong> <code style="color: var(--brand-navy); font-weight: 700;">alex.rivera@techventures.io</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">AlexSeeker@2026!</code>';
-    }
   }
 }
 
