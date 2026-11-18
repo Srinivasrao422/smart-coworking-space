@@ -103,7 +103,8 @@
 
         <!-- Classy Segmented Filter Bar (NO RANGE SLIDERS) -->
         <div class="executive-filter-card">
-          <div class="filter-row">
+          <!-- Primary Segmented Controls Row (2 Spacious Columns: Capacity & Budget) -->
+          <div class="filter-row filter-row-primary">
             
             <!-- Team Size Segmented Control -->
             <div class="filter-col">
@@ -129,6 +130,11 @@
               </div>
             </div>
 
+          </div>
+
+          <!-- Secondary Filters Row (3 Columns: Area, Atmosphere, Unit Type) -->
+          <div class="filter-row filter-row-secondary">
+            
             <!-- Floor Area Size Segmented Control -->
             <div class="filter-col">
               <label class="filter-label">Facility Area Size</label>
@@ -140,11 +146,6 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- Secondary Filters Row -->
-          <div class="filter-row" style="margin-bottom: 0;">
-            
             <!-- Atmosphere / Vibe Select -->
             <div class="filter-col">
               <label class="filter-label">Atmosphere & Work Style Expectation</label>
@@ -168,21 +169,20 @@
               </select>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="filter-col" style="justify-content: flex-end;">
-              <div style="display: flex; gap: 8px;">
-                <button class="btn btn-outline" style="flex: 1;" onclick="openCompareModal()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                  Compare All
-                </button>
-                <button class="btn btn-outline" onclick="resetAllFilters()">Reset</button>
-              </div>
-            </div>
-
           </div>
 
-          <!-- Amenities Filter Selector -->
+          <!-- Amenities Filter Selector & Action Buttons -->
           <div class="amenities-selector-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
+              <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">Required Amenities:</span>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-outline btn-sm" onclick="openCompareModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  Compare All
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="resetAllFilters()">Reset Filters</button>
+              </div>
+            </div>
             <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">Required Amenities:</span>
             <div class="amenity-chip-list">
               <label class="amenity-chip-label">
