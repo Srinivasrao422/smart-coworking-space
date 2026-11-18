@@ -215,5 +215,42 @@ class TestCoworkingPlatform(unittest.TestCase):
 
         conn.close()
 
+    def test_10_admin_credentials_and_rbac_defense(self):
+        """Verify Admin credentials security, privilege escalation prevention, and server-side RBAC."""
+        # 1. Admin authentication with correct credentials
+        admin_email = os.environ.get("ADMIN_EMAIL", "kumbhasrinivasarao422@gmail.com")
+        admin_pwd = os.environ.get("ADMIN_PASSWORD", "SmartCoWork@2026!")
+        admin_auth = authenticate_user(admin_email, admin_pwd)
+        self.assertIsNotNone(admin_auth, "Admin authentication with valid credentials must succeed")
+        self.assertEqual(admin_auth["user"]["role"], "ADMIN")
+        self.assertTrue(bool(admin_auth["token"]))
+
+        # 2. Admin authentication with incorrect password must fail
+        bad_auth = authenticate_user(admin_email, "IncorrectPassword2026!")
+        self.assertIsNone(bad_auth, "Admin auth with incorrect password must be rejected")
+
+        # 3. Privilege Escalation Defense: Self-registering with role="ADMIN" must be rejected
+        with self.assertRaises(ValueError) as ctx:
+            register_user(f"hacker_{uuid.uuid4().hex[:6]}@exploit.com", "HackerPass2026!", "Malicious Actor", role="ADMIN")
+        self.assertIn("Privilege Error", str(ctx.exception))
+
+        # 4. Host demo account remains functional
+        host_auth = authenticate_user("vikram.malhotra@nexusworkspaces.com", "NexusHost@2026!")
+        self.assertIsNotNone(host_auth, "Space Host demo authentication must remain functional")
+        self.assertEqual(host_auth["user"]["role"], "SPACE_OWNER")
+
+        # 5. Enterprise seeker demo account remains functional
+        seeker_auth = authenticate_user("alex.rivera@techventures.io", "AlexSeeker@2026!")
+        self.assertIsNotNone(seeker_auth, "Enterprise Seeker demo authentication must remain functional")
+        self.assertEqual(seeker_auth["user"]["role"], "USER")
+
+        # 6. Verify token decoding verifies roles strictly
+        seeker_token_data = verify_token(seeker_auth["token"])
+        self.assertEqual(seeker_token_data["role"], "USER")
+        self.assertNotEqual(seeker_token_data["role"], "ADMIN")
+
+        admin_token_data = verify_token(admin_auth["token"])
+        self.assertEqual(admin_token_data["role"], "ADMIN")
+
 if __name__ == "__main__":
     unittest.main()

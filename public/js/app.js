@@ -122,6 +122,28 @@ function openAuthModal(mode = 'login') {
   const regFields = document.getElementById("auth-register-fields");
   const submitBtn = document.getElementById("auth-submit-btn");
 
+  // Keep admin and all user credentials blank by default
+  const emailInput = document.getElementById("auth-email");
+  const pwdInput = document.getElementById("auth-password");
+  if (emailInput) {
+    emailInput.value = "";
+    emailInput.placeholder = "user@company.com";
+  }
+  if (pwdInput) {
+    pwdInput.value = "";
+    pwdInput.type = "password";
+  }
+  const btnToggle = document.getElementById("btn-toggle-pwd");
+  if (btnToggle) btnToggle.textContent = "Show Password";
+
+  // Hide hint card and clear any active button states
+  const hintEl = document.getElementById("quick-cred-hint");
+  if (hintEl) {
+    hintEl.style.display = "none";
+    hintEl.innerHTML = "";
+  }
+  document.querySelectorAll(".quick-role-btn").forEach(b => b.classList.remove("active"));
+
   if (mode === 'register') {
     title.innerText = "Create Your Account";
     regFields.style.display = "block";
@@ -175,18 +197,54 @@ function handleLogout() {
 
 function quickLoginAs(role) {
   const hintEl = document.getElementById("quick-cred-hint");
+  const emailInput = document.getElementById("auth-email");
+  const pwdInput = document.getElementById("auth-password");
+
+  // Clear previous button active states
+  document.querySelectorAll(".quick-role-btn").forEach(b => b.classList.remove("active"));
+
   if (role === 'ADMIN') {
-    document.getElementById("auth-email").value = "kumbhasrinivasarao422@gmail.com";
-    document.getElementById("auth-password").value = "SmartCoWork@2026!";
-    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Administrator<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">kumbhasrinivasarao422@gmail.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">SmartCoWork@2026!</code>';
+    const adminBtn = document.getElementById("btn-quick-admin");
+    if (adminBtn) adminBtn.classList.add("active");
+
+    // Secure Admin Portal: DO NOT auto-fill or expose admin credentials in the client
+    if (emailInput) {
+      emailInput.value = "";
+      emailInput.placeholder = "admin@company.com";
+      emailInput.focus();
+    }
+    if (pwdInput) {
+      pwdInput.value = "";
+    }
+
+    if (hintEl) {
+      hintEl.style.display = "block";
+      hintEl.innerHTML = '<div style="color: var(--brand-navy); font-weight: 600; display: flex; align-items: center; gap: 6px;">' +
+        '<span>🔒 <strong>System Administrator Portal:</strong> Restricted access. Enter your authorized administrator email and password below.</span>' +
+        '</div>';
+    }
   } else if (role === 'OWNER') {
-    document.getElementById("auth-email").value = "vikram.malhotra@nexusworkspaces.com";
-    document.getElementById("auth-password").value = "NexusHost@2026!";
-    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Space Host / Manager<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">vikram.malhotra@nexusworkspaces.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">NexusHost@2026!</code>';
+    const hostBtn = document.getElementById("btn-quick-host");
+    if (hostBtn) hostBtn.classList.add("active");
+
+    if (emailInput) emailInput.value = "vikram.malhotra@nexusworkspaces.com";
+    if (pwdInput) pwdInput.value = "NexusHost@2026!";
+
+    if (hintEl) {
+      hintEl.style.display = "block";
+      hintEl.innerHTML = '<strong>Role:</strong> Space Host / Manager<br/><strong>Demo Account:</strong> <code style="color: var(--brand-navy); font-weight: 700;">vikram.malhotra@nexusworkspaces.com</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">NexusHost@2026!</code>';
+    }
   } else if (role === 'USER') {
-    document.getElementById("auth-email").value = "alex.rivera@techventures.io";
-    document.getElementById("auth-password").value = "AlexSeeker@2026!";
-    if (hintEl) hintEl.innerHTML = '<strong>Role:</strong> Enterprise Seeker<br/><strong>Email:</strong> <code style="color: var(--brand-navy); font-weight: 700;">alex.rivera@techventures.io</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">AlexSeeker@2026!</code>';
+    const seekerBtn = document.getElementById("btn-quick-seeker");
+    if (seekerBtn) seekerBtn.classList.add("active");
+
+    if (emailInput) emailInput.value = "alex.rivera@techventures.io";
+    if (pwdInput) pwdInput.value = "AlexSeeker@2026!";
+
+    if (hintEl) {
+      hintEl.style.display = "block";
+      hintEl.innerHTML = '<strong>Role:</strong> Enterprise Seeker<br/><strong>Demo Account:</strong> <code style="color: var(--brand-navy); font-weight: 700;">alex.rivera@techventures.io</code><br/><strong>Password:</strong> <code style="color: var(--brand-navy); font-weight: 700;">AlexSeeker@2026!</code>';
+    }
   }
 }
 
@@ -217,6 +275,31 @@ function initNavigationTabs() {
 }
 
 function switchTab(tabId) {
+  // Authorization guards for restricted administrative and space host portals
+  if (tabId === "admin") {
+    if (!API.currentUser || API.currentUser.role !== "ADMIN") {
+      showToast("Access Restricted: System Administrator authorization required.", "error");
+      openAuthModal("login");
+      return;
+    }
+  }
+
+  if (tabId === "host") {
+    if (!API.currentUser || (API.currentUser.role !== "SPACE_OWNER" && API.currentUser.role !== "ADMIN")) {
+      showToast("Access Restricted: Space Host authorization required.", "error");
+      openAuthModal("login");
+      return;
+    }
+  }
+
+  if (tabId === "bookings") {
+    if (!API.currentUser) {
+      showToast("Please sign in to view your reservations.", "info");
+      openAuthModal("login");
+      return;
+    }
+  }
+
   document.querySelectorAll(".nav-link-btn").forEach(b => b.classList.remove("active"));
   document.querySelectorAll(".tab-pane").forEach(p => p.style.display = "none");
 

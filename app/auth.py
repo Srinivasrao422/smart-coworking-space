@@ -44,13 +44,7 @@ def hash_password(password: str, salt: str = None) -> tuple[str, str]:
 
 def verify_password(password: str, hashed: str, salt: str) -> bool:
     new_hash, _ = hash_password(password, salt)
-    if hmac.compare_digest(new_hash, hashed):
-        return True
-    # Transitional fallback for demo suites
-    fallback_hash, _ = hash_password("password123", salt)
-    if hmac.compare_digest(fallback_hash, hashed) and password in ["password123", "SmartCoWork@2026!"]:
-        return True
-    return False
+    return hmac.compare_digest(new_hash, hashed)
 
 def create_token(user_id: str, email: str, role: str, expires_in_seconds: int = 86400 * 7) -> str:
     """Generate a tamper-proof HMAC-SHA256 signed bearer token."""
@@ -139,8 +133,9 @@ def authenticate_user(email: str, password: str) -> dict | None:
     return None
 
 def register_user(email: str, password: str, full_name: str, role: str = "USER", company_name: str = "", phone: str = "") -> dict:
-    valid_roles = ["USER", "SPACE_OWNER", "ADMIN"]
-    if role not in valid_roles:
+    if role == "ADMIN":
+        raise ValueError("Privilege Error: Administrative accounts cannot be registered through the public portal.")
+    if role not in ["USER", "SPACE_OWNER"]:
         role = "USER"
 
     email_clean = email.strip().lower()

@@ -204,12 +204,16 @@ def create_notification(user_id: str, notif_type: str, title: str, message: str,
 
 def seed_or_update_real_users(cursor, now):
     from .auth import hash_password
+    import os
+
+    admin_email = os.environ.get("ADMIN_EMAIL", "kumbhasrinivasarao422@gmail.com")
+    admin_password = os.environ.get("ADMIN_PASSWORD", "SmartCoWork@2026!")
 
     real_users = [
-        # 1. Primary Administrator (User's real email & corporate admin)
-        ("user-admin-real", "kumbhasrinivasarao422@gmail.com", "SmartCoWork@2026!", "Srinivas Rao Kumbha", "ADMIN", "CodeGuard AI Enterprise Operations", "+1-415-890-4220"),
-        ("user-admin-corp", "admin@smartcowork.io", "SmartCoWork@2026!", "Executive Admin Team", "ADMIN", "SmartCoWork Global Inc", "+1-800-555-0100"),
-        ("user-admin-legacy", "admin@codeguard.ai", "SmartCoWork@2026!", "System Administrator", "ADMIN", "CodeGuard Operations", "+1-800-555-0100"),
+        # 1. Primary Administrator (Configurable via environment variables)
+        ("user-admin-real", admin_email, admin_password, "Srinivas Rao Kumbha", "ADMIN", "CodeGuard AI Enterprise Operations", "+1-415-890-4220"),
+        ("user-admin-corp", "admin@smartcowork.io", admin_password, "Executive Admin Team", "ADMIN", "SmartCoWork Global Inc", "+1-800-555-0100"),
+        ("user-admin-legacy", "admin@codeguard.ai", admin_password, "System Administrator", "ADMIN", "CodeGuard Operations", "+1-800-555-0100"),
         # 2. Real Space Hosts / Facility Managers
         ("host-nexus-01", "vikram.malhotra@nexusworkspaces.com", "NexusHost@2026!", "Vikram Malhotra", "SPACE_OWNER", "Nexus Workspaces Group", "+1-415-555-0101"),
         ("host-nexus-alias", "owner@nexusspaces.com", "NexusHost@2026!", "Vikram Malhotra", "SPACE_OWNER", "Nexus Workspaces Group", "+1-415-555-0101"),

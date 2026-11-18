@@ -49,16 +49,16 @@ python run.py
 The web application is live at:
 👉 **http://127.0.0.1:8000/**
 
-### Verified Real Production Accounts
+### Verified Production Accounts & Demos
 
 | Role | Name | Email | Password | Access Capabilities |
 | :--- | :--- | :--- | :--- | :--- |
-| **System Administrator** | Srinivas Rao Kumbha | `kumbhasrinivasarao422@gmail.com` | `SmartCoWork@2026!` | Operations analytics, live telemetry grid, system logs, administrative oversight |
+| **System Administrator** | Srinivas Rao Kumbha | Protected | `[Restricted - Direct Auth]` | Operations analytics, live telemetry grid, system logs, administrative oversight |
 | **Space Host / Owner** | Vikram Malhotra | `vikram.malhotra@nexusworkspaces.com` | `NexusHost@2026!` | Facility listings, unit maintenance toggles, inquiry triage, booking approvals |
 | **Enterprise Seeker** | Alex Rivera | `alex.rivera@techventures.io` | `AlexSeeker@2026!` | Multi-bracket search, interactive booking, QR keycard check-in simulation |
 | **Startup Founder** | Elena Rostova | `elena.rostova@synapseai.tech` | `ElenaSynapse@2026!` | Team bookings, private cabin reservations, host proposals |
 
-*(Note: In the sign-in modal, click the quick account buttons to autofill real credentials instantly, or create a new account with your own real email!)*
+*(Note: In the sign-in modal, Space Host and Enterprise demo accounts can be selected for rapid review. Administrator access requires manual credential entry through the secure authentication endpoint.)*
 
 ---
 
